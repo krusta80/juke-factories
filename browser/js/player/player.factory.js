@@ -1,9 +1,8 @@
 'use strict';
 
-juke.factory('PlayerFactory', function(){
+juke.factory('PlayerFactory', function($rootScope){
   // non-UI logic in here
   var playerObj = {};
-
   var songs;
   var currentSong = null;
   var playing = false;
@@ -13,11 +12,11 @@ juke.factory('PlayerFactory', function(){
   var audio = document.createElement('audio');
   audio.addEventListener('ended', function () {
     playerObj.next();
-    //$scope.$evalAsync(); // likely best, schedules digest if none happening
+    $rootScope.$evalAsync(); // likely best, schedules digest if none happening
   });
   audio.addEventListener('timeupdate', function () {
     progress = audio.currentTime / audio.duration;
-    //$scope.$evalAsync(); // likely best, schedules digest if none happening
+    $rootScope.$evalAsync(); // likely best, schedules digest if none happening
   });
 
   // a "true" modulo that wraps negative to the top of the range
