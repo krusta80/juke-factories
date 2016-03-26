@@ -33,21 +33,8 @@ juke.controller('AlbumCtrl', function(AlbumFactory, PlayerFactory, StatsFactory,
     PlayerFactory.toggle(song);
   };
 
-  // incoming events (from Player, toggle, or skip)
-  // $scope.$on('pause', pause);
-  // $scope.$on('play', play);
-  // $scope.$on('next', next);
-  // $scope.$on('prev', prev);
-
-  // functionality
-  function pause () {
-    PlayerFactory.pause();
-  }
-  function play (event, song) {
-    PlayerFactory.start(song);
-  };
-
   function next () { PlayerFactory.next(); };
+
   function prev () { PlayerFactory.previous(); };
 
 });
