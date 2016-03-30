@@ -1,6 +1,6 @@
 'use strict';
 
-juke.controller('AlbumCtrl', function(AlbumFactory, PlayerFactory, StatsFactory, $scope, $rootScope, $log) {
+juke.controller('AlbumCtrl', function(ManagementFactory, AlbumFactory, PlayerFactory, StatsFactory, $scope, $rootScope, $log) {
 
   $scope.currentSong = function() {
     return PlayerFactory.getCurrentSong();
@@ -10,27 +10,19 @@ juke.controller('AlbumCtrl', function(AlbumFactory, PlayerFactory, StatsFactory,
     return PlayerFactory.isPlaying();
   };
 
-  // load our initial data
-  AlbumFactory.fetchAll()
-  .then(function (album) {
-    album.imageUrl = '/api/albums/' + album._id + '.image';
-    album.songs.forEach(function (song, i) {
-      song.audioUrl = '/api/songs/' + song._id + '.audio';
-      song.albumIndex = i;
-    });
-    $scope.album = album;
-    PlayerFactory.start(null,album.songs);
-    StatsFactory.totalTime(album)
-    .then(function (albumDuration) {
-        console.log("duration is "+albumDuration);
-        $scope.fullDuration = albumDuration;
-    });
-  })
-  .catch($log.error); // $log service can be turned on and off; also, pre-bound
+  $rootScope.$on('loadAlbum', function(event, data) {
+    AlbumFactory.fetchById(data.id)
+      .then(function(album) {
+        $scope.album = AlbumFactory.loadAlbum(album);
+        ManagementFactory.setView('showAlbum');
+      });
+  });
+  
+  console.log("album controller loaded..");
 
   // main toggle
   $scope.toggle = function (song) {
-    PlayerFactory.toggle(song);
+    PlayerFactory.toggle(song,$scope.album.songs);
   };
 
   function next () { PlayerFactory.next(); };
@@ -41,10 +33,15 @@ juke.controller('AlbumCtrl', function(AlbumFactory, PlayerFactory, StatsFactory,
 
 juke.controller('AlbumsCtrl', function(AlbumsFactory, $scope, $rootScope, $log) {
   
+  $scope.loadAlbum = function(id) {
+    $rootScope.$broadcast('loadAlbum', {id: id});
+  }
+  
   AlbumsFactory.fetchAll()
   .then(function (albums) {
     $scope.albums = albums.map(function(album) {
       album.imageUrl = '/api/albums/' + album._id + '.image';
+      album.id = album._id;
       album.songCount = album.songs.length;
       return album;
     });

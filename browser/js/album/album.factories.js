@@ -33,15 +33,25 @@ juke.factory('AlbumFactory', function ($log,$http,$q) {
   };
 
   statsObj.fetchById = function(id) {
-    $http.get('/api/albums/'+id)
+    return $http.get('/api/albums/'+id)
       .then(function (res) { return res.data; })
       .catch($log.error); // $log service can be turned on and off; also, pre-bound
   };
-
+  
+  statsObj.loadAlbum = function(album) {
+    album.imageUrl = '/api/albums/' + album._id + '.image';
+    album.songs.forEach(function (song, i) {
+      song.audioUrl = '/api/songs/' + song._id + '.audio';
+      song.albumIndex = i;
+    });
+    
+    return album;
+  };
+    
   return statsObj;
 });
 
-juke.factory('AlbumsFactory', function ($log,$http,$q) {
+juke.factory('AlbumsFactory', function ($log,$http,$q,$rootScope) {
   var statsObj = {};
   
   statsObj.fetchAll = function(id) {
@@ -56,6 +66,8 @@ juke.factory('AlbumsFactory', function ($log,$http,$q) {
       .catch($log.error); // $log service can be turned on and off; also, pre-bound
   };
 
+  $rootScope.showAlbums = true;
+  
   return statsObj;
 });
 

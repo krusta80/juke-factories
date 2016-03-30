@@ -56,12 +56,12 @@ juke.factory('PlayerFactory', function($rootScope){
     playing = true;
   };
 
-  playerObj.toggle = function(song) {
+  playerObj.toggle = function(song,songList) {
   	if(song === currentSong) {
   		if(playing) playerObj.pause();
   		else playerObj.resume();
   	}
-  	else playerObj.start(song);
+  	else playerObj.start(song,songList);
   };
 
   playerObj.isPlaying = function() {
@@ -77,7 +77,6 @@ juke.factory('PlayerFactory', function($rootScope){
   playerObj.previous = function () { skip(-1); };
   
   playerObj.getProgress = function () {
-  	if(!playing) return 0;
   	return progress;
   };
 

@@ -11,23 +11,33 @@
     <script src="/js/album/album.factories.js" defer></script>
     <script src="/js/player/player.controller.js" defer></script>
     <script src="/js/player/player.factory.js" defer></script>
+    <script src="/js/artist/artist.factory.js" defer></script>
+    <script src="/js/mgmt.factory.js" defer></script>
+    <script src="/js/artist/artist.controller.js" defer></script>
+    <script src="/js/sidebar/sidebar.controller.js" defer></script>
+
   </head>
   <body ng-app="juke">
     <div id="main" class="container-fluid">
 
-      <div class="col-xs-2">
+      <div class="col-xs-2" ng-controller="SidebarCtrl">
         <sidebar>
           <img src="juke.svg" class="logo">
           <section>
             <h4 class="playlist-item active">
-              <a href="#">ALBUMS</a>
+              <a href="#" ng-click="viewAlbums()">ALBUMS</a>
+            </h4>
+          </section>
+          <section>
+            <h4 class="playlist-item active">
+              <a href="#" ng-click="viewArtists()">ARTISTS</a>
             </h4>
           </section>
         </sidebar>
       </div>
 
-      <div class="col-xs-10">
-        <div class="album" ng-controller="AlbumCtrl" ng-if="true">
+      <div class="col-xs-10" ng-controller="AlbumCtrl" >
+        <div class="album" ng-if="views.showAlbum">
           <p>
             <h3>{{ album.name }} / {{ fullDuration }}</h3>
             <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
@@ -55,11 +65,11 @@
             </tbody>
           </table>
         </div>
-        <div ng-controller="AlbumsCtrl" ng-if="false">
+        <div ng-controller="AlbumsCtrl" ng-if="views.showAlbums">
           <h3>Albums</h3>
           <div class="row">
             <div class="col-xs-4" ng-repeat="album in albums">
-              <a class="thumbnail" href="#">
+              <a class="thumbnail" href="#" ng-click="loadAlbum(album.id)">
                 <img ng-src="{{album.imageUrl}}">
                 <div class="caption">
                   <h5>
@@ -69,6 +79,23 @@
                 </div>
               </a>
             </div>
+          </div>
+        </div>
+        <div ng-controller="ArtistsCtrl">
+          <div ng-if="views.showArtists">
+            <h3>Artists</h3>
+            <div class="list-group">
+              <div class="list-group-item" ng-repeat="artist in artists">
+                <a href="#" ng-click="loadArtist(artist._id)">
+                  {{artist.name}}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div ng-if="views.showOneArtist">
+            <h3>{{artist.name}}</h3>
+            <h4>{{}}</h4>
+            <h4>SONGS</h4>
           </div>
         </div>
       </div>
